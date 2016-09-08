@@ -1,0 +1,19 @@
+{
+   "kind": "List",
+   "apiVersion": "v1",
+   "metadata": {
+      "name": "elasticsearch-proto"
+   },
+   "items": [
+      {
+         "kind": "ImageStream",
+         "apiVersion": "v1",
+         "metadata": {
+            "name": "rhel7"
+         },
+         "spec": {
+            "dockerImageRepository": "registry.access.redhat.com/rhel7:latest"
+         }
+      }
+   ]
+}

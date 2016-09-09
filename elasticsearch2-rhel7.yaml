@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  labels:
+    app: elasticsearch2-rhel7
+  name: elasticsearch2-rhel7
+  namespace: proto-elasticsearch
+spec:
+  clusterIP: None
+  ports:
+  - name: 9200-tcp
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  - name: 9300-tcp
+    port: 9300
+    protocol: TCP
+    targetPort: 9300
+  selector:
+    app: elasticsearch2p-rhel7
+    deploymentconfig: elasticsearch2p-rhel7
+  sessionAffinity: None
+  type: ClusterIP

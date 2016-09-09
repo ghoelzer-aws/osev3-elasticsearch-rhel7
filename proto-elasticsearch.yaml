@@ -1,0 +1,515 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: elasticsearch2-rhel7
+    name: elasticsearch2-rhel7
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: elasticsearch2-rhel7:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: /elasticsearch-docker-rhel-master/elasticsearch2
+      git:
+        uri: https://github.com/ghoelzer-rht/osev3-elasticsearch-rhel7.git
+      secrets: []
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: openjdk7-rhel7:latest
+          namespace: proto-elasticsearch
+      type: Docker
+    triggers:
+    - github:
+        secret: HxoaVlZIpfw4m0EdzdFg
+      type: GitHub
+    - generic:
+        secret: hGsF76eIyuI2mrKp9VkE
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: elasticsearch2p-rhel7
+    name: elasticsearch2p-rhel7
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: elasticsearch2p-rhel7:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: /elasticsearch-docker-rhel-master/elasticsearch2-plugins
+      git:
+        uri: https://github.com/ghoelzer-rht/osev3-elasticsearch-rhel7.git
+      secrets: []
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: elasticsearch2-rhel7:latest
+          namespace: proto-elasticsearch
+      type: Docker
+    triggers:
+    - github:
+        secret: 5YrXEHF6MoSjg-ZDl8Ij
+      type: GitHub
+    - generic:
+        secret: BwMiU6Dkngc3ZMJyLMwy
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: foodtrucks
+    name: foodtrucks
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: foodtrucks:latest
+    postCommit: {}
+    resources: {}
+    source:
+      git:
+        uri: https://github.com/ghoelzer-rht/FoodTrucks.git
+      secrets: []
+      type: Git
+    strategy:
+      dockerStrategy: {}
+      type: Docker
+    triggers:
+    - github:
+        secret: 8U7S-GdJe_NoTRC37F-e
+      type: GitHub
+    - generic:
+        secret: LoMLzJpD4t2DrX48LPYW
+      type: Generic
+    - type: ConfigChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: openjdk7-rhel7
+    name: openjdk7-rhel7
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: openjdk7-rhel7:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: /elasticsearch-docker-rhel-master/openjdk7-rhel
+      git:
+        uri: https://github.com/ghoelzer-rht/osev3-elasticsearch-rhel7.git
+      secrets: []
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: rhel7:latest
+          namespace: proto-elasticsearch
+      type: Docker
+    triggers:
+    - github:
+        secret: e7goEE4FVQ7odyqQou39
+      type: GitHub
+    - generic:
+        secret: Cu57P-k1bwGznbEl6Uu7
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/deployment.cancelled: "3"
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: elasticsearch2p-rhel7
+    name: elasticsearch2p-rhel7
+  spec:
+    replicas: 2
+    selector:
+      app: elasticsearch2p-rhel7
+      deploymentconfig: elasticsearch2p-rhel7
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.elasticsearch2p-rhel7.image.entrypoint: '["elasticsearch","-Des.default.path.home=${ES_HOME}","-Des.default.path.logs=${LOG_DIR}","-Des.default.path.data=${DATA_DIR}","-Des.default.path.conf=${CONF_DIR}","-Des.discovery.zen.ping.unicast.hosts=${ES_HOSTS}"]'
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: elasticsearch2p-rhel7
+          deploymentconfig: elasticsearch2p-rhel7
+      spec:
+        containers:
+        - env:
+          - name: ES_HOSTS
+            value: elasticsearch2-rhel7.proto-elasticsearch.svc.cluster.local
+          image: 172.30.56.228:5000/proto-elasticsearch/elasticsearch2-rhel7@sha256:c87450e346aea3bc2a71ccd917d7209521aa15ea8b9006f20ad785e9f5def1bb
+          imagePullPolicy: Always
+          name: elasticsearch2p-rhel7
+          ports:
+          - containerPort: 9200
+            protocol: TCP
+          - containerPort: 9300
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - elasticsearch2p-rhel7
+        from:
+          kind: ImageStreamTag
+          name: elasticsearch2-rhel7:latest
+      type: ImageChange
+  status: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: foodtrucks
+    name: foodtrucks
+  spec:
+    replicas: 1
+    selector:
+      app: foodtrucks
+      deploymentconfig: foodtrucks
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.foodtrucks.image.entrypoint: '["/bin/bash"]'
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: foodtrucks
+          deploymentconfig: foodtrucks
+      spec:
+        containers:
+        - env:
+          - name: ES_SVC
+            value: elasticsearch2-rhel7.proto-elasticsearch.svc.cluster.local
+          image: 172.30.56.228:5000/proto-elasticsearch/foodtrucks@sha256:9bb3fc845f9bbb258cf9d6d208ffb9777117e0b66bb28055e596f2527b58826b
+          imagePullPolicy: Always
+          name: foodtrucks
+          ports:
+          - containerPort: 5000
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - foodtrucks
+        from:
+          kind: ImageStreamTag
+          name: foodtrucks:latest
+      type: ImageChange
+  status: {}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: elasticsearch2-rhel7
+    name: elasticsearch2-rhel7
+  spec:
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.56.228:5000/proto-elasticsearch/elasticsearch2-rhel7:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: elasticsearch2p-rhel7
+    name: elasticsearch2p-rhel7
+  spec:
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.56.228:5000/proto-elasticsearch/elasticsearch2p-rhel7:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: foodtrucks
+    name: foodtrucks
+  spec:
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.56.228:5000/proto-elasticsearch/foodtrucks:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: openjdk7-rhel7
+    name: openjdk7-rhel7
+  spec:
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: 172.30.56.228:5000/proto-elasticsearch/openjdk7-rhel7:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/image.dockerRepositoryCheck: 2016-09-08T22:07:19Z
+    creationTimestamp: null
+    generation: 2
+    name: rhel7
+  spec:
+    dockerImageRepository: registry.access.redhat.com/rhel7
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7:7.0-21
+      generation: 2
+      importPolicy: {}
+      name: 7.0-21
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7:7.0-23
+      generation: 2
+      importPolicy: {}
+      name: 7.0-23
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7:7.0-27
+      generation: 2
+      importPolicy: {}
+      name: 7.0-27
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7:7.2
+      generation: 2
+      importPolicy: {}
+      name: "7.2"
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7:latest
+      generation: 2
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/image.dockerRepositoryCheck: 2016-09-09T15:31:59Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: foodtrucks
+    name: ubuntu
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: ubuntu:14.04
+      from:
+        kind: DockerImage
+        name: 172.30.56.228:5000/proto-elasticsearch/ubuntu:14.04
+      generation: 2
+      importPolicy: {}
+      name: "14.04"
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: elasticsearch2-rhel7
+    name: elasticsearch2-rhel7
+  spec:
+    clusterIP: None
+    portalIP: None
+    ports:
+    - name: 9200-tcp
+      port: 9200
+      protocol: TCP
+      targetPort: 9200
+    - name: 9300-tcp
+      port: 9300
+      protocol: TCP
+      targetPort: 9300
+    selector:
+      app: elasticsearch2p-rhel7
+      deploymentconfig: elasticsearch2p-rhel7
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: foodtrucks
+    name: foodtrucks
+  spec:
+    ports:
+    - name: 5000-tcp
+      port: 5000
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      app: foodtrucks
+      deploymentconfig: foodtrucks
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: foodtrucks
+    name: foodtrucks
+  spec:
+    host: foodtrucks-proto-elasticsearch.rhel-cdk.10.1.2.2.xip.io
+    port:
+      targetPort: 5000-tcp
+    to:
+      kind: Service
+      name: foodtrucks
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2016-09-09T18:10:44Z
+        status: "True"
+        type: Admitted
+      host: foodtrucks-proto-elasticsearch.rhel-cdk.10.1.2.2.xip.io
+      routerName: router
+kind: List
+metadata: {}
